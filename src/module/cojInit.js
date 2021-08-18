@@ -1,6 +1,6 @@
-import {setTemplate, joinInit} from './index.js'
+import {setTemplate, joinInit, createInit} from './index.js'
 
-export function cojInput () {
+export function cojInit () {
     setTemplate('coj')
 
     const createBtn = document.querySelector('button[data-action="create"]')

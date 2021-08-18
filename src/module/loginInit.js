@@ -1,14 +1,14 @@
-import {setTemplate, socket, cojInput} from './index.js'
+import {setTemplate, socket, cojInit, Enter} from './index.js'
 
 export function loginInit () {
     setTemplate('login')
 
-    socket.on('signin', cojInput)
+    socket.once('signin', cojInit)
 
     const loginInput = document.querySelector('[data-input="login"]')
 
     loginInput.addEventListener('keyup', e => {
-        if (e.key === 'Enter') {
+        if (e.key === Enter) {
             socket.emit('signin', loginInput.value)
         }
     })
