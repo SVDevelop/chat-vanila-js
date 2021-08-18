@@ -13,5 +13,5 @@ export function loginInit () {
         }
     })
 
-    socket.emit('signin', String(Date.now())) //production remove
+    // socket.emit('signin', String(Date.now())) //production remove
 }

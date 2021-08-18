@@ -9,5 +9,5 @@ export function cojInit () {
     createBtn.addEventListener('click', createInit)
     joinBtn.addEventListener('click', joinInit)
 
-    joinInit()  //production remove
+    // joinInit()  //production remove
 }

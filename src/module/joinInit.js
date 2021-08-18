@@ -57,5 +57,5 @@ export function joinInit () {
         }
     }
 
-    socket.emit('join') //production remove
+    // socket.emit('join') //production remove
 }
