@@ -49,9 +49,9 @@ export function joinInit () {
                 lockSpan.classList.add("lock")
             }
 
-            chatRoom
-                .querySelector('li')
-                .addEventListener('click', () => titleInput.value = chat.title)
+            const liElement = chatRoom.querySelector('li')
+
+            liElement.addEventListener('click', () => titleInput.value = chat.title)
 
             chatList.append(chatRoom)
         }
