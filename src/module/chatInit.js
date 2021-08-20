@@ -1,103 +1,118 @@
-import {setTemplate, socket, getMessages, Enter, format} from './index.js'
+import {
+	setTemplate,
+	socket,
+	getMessages,
+	ENTER_KEY,
+	format,
+} from "./index.js";
 
-const messageTemplate = document.querySelector('template[data-segment="chat-message"]')
+const messageTemplate = document.querySelector(
+	'template[data-segment="chat-message"]'
+);
 
-export function chatInit () {
-    setTemplate('chat')
+export function chatInit() {
+	setTemplate("chat");
 
-    const content = document.querySelector('[data-input="content"]')
-    const send = document.querySelector('[data-action="send"]')  
-    
-    content.addEventListener('keyup', (e) => {
-        if (e.key === Enter && content.value.trim()) {
-            content.value.trim() &&
-            socket.emit('message', content.value)
-            content.value = ''
-        }
-    })
-    send.addEventListener('click', (e) => {
-        content.value.trim() &&
-        socket.emit('message', content.value)
-        content.value = ''
-    })
+	const content = document.querySelector('[data-input="content"]');
+	const send = document.querySelector('[data-action="send"]');
 
-    const messagesDiv = document.querySelector('[data-segment="messages"]')
+	content.addEventListener("keyup", (e) => {
+		if (e.key === ENTER_KEY && content.value.trim()) {
+			content.value.trim() && socket.emit("message", content.value);
+			content.value = "";
+		}
+	});
 
-    for ( const message of getMessages() ) {
-        addMessage(message)
-        messagesDiv.scrollTop += `${messagesDiv.clientHeight}`
-    }
+	send.addEventListener("click", (e) => {
+		content.value.trim() && socket.emit("message", content.value);
+		content.value = "";
+	});
 
-    socket.on('message:add', addMessage)
-    socket.on('message:like', (id, counter) => {
-        const messageDiv = document.querySelector(`div[data-id="${id}"]`)
-        if (messageDiv) {
-            const likeDiv = messageDiv.querySelector('div[data-flag="like"]')
-            if (counter) {
-                likeDiv.textContent = counter
-                likeDiv.classList.remove('chat-rating-empty')
-            } else {
-                likeDiv.textContent = ''
-                likeDiv.classList.add('chat-raiting-empty')
-            }
-        }
-    })
+	const messagesDiv = document.querySelector('[data-segment="messages"]');
 
-    socket.on('message:dislike', (id, counter) => {
-        const messageDiv = document.querySelector(`div[data-id="${id}"]`)
-        if (messageDiv) {
-            const dislikeDiv = messageDiv.querySelector('div[data-flag="dislike"]')
-            if (counter) {
-                dislikeDiv.textContent = counter
-                dislikeDiv.classList.remove('chat-rating-empty')
-            } else {
-                dislikeDiv.textContent = ''
-                dislikeDiv.classList.add('chat-raiting-empty')
-            }
-        }
-    })
+	for (const message of getMessages()) {
+		addMessage(message);
+		messagesDiv.scrollTop += `${messagesDiv.clientHeight}`;
+	}
 
-    function addMessage (message) {
-        const messageElement = document.importNode(messageTemplate.content, true)
+	socket.on("message:add", addMessage);
+	socket.on("message:like", (id, counter) => {
+		const messageDiv = document.querySelector(`div[data-id="${id}"]`);
+		if (messageDiv) {
+			const likeDiv = messageDiv.querySelector('div[data-flag="like"]');
+			if (counter) {
+				likeDiv.textContent = counter;
+				likeDiv.classList.remove("chat-rating-empty");
+			} else {
+				likeDiv.textContent = "";
+				likeDiv.classList.add("chat-raiting-empty");
+			}
+		}
+	});
 
-        const nameDiv = messageElement.querySelector('div[data-flag="name"]')
-        const dateDiv = messageElement.querySelector('div[data-flag="date"]')
-        const contentDiv = messageElement.querySelector('div[data-flag="content"]')
-        const likeDiv = messageElement.querySelector('div[data-flag="like"]')
-        const dislikeDiv = messageElement.querySelector('div[data-flag="dislike"]') 
-        const messageIdDiv = messageElement.querySelector('div[data-id]')
+	socket.on("message:dislike", (id, counter) => {
+		const messageDiv = document.querySelector(`div[data-id="${id}"]`);
+		if (messageDiv) {
+			const dislikeDiv = messageDiv.querySelector(
+				'div[data-flag="dislike"]'
+			);
+			if (counter) {
+				dislikeDiv.textContent = counter;
+				dislikeDiv.classList.remove("chat-rating-empty");
+			} else {
+				dislikeDiv.textContent = "";
+				dislikeDiv.classList.add("chat-raiting-empty");
+			}
+		}
+	});
 
-        nameDiv.textContent = message.name
-        dateDiv.textContent = format(message.date)
-        contentDiv.textContent = message.content
+	function addMessage(message) {
+		const messageElement = document.importNode(
+			messageTemplate.content,
+			true
+		);
 
-        if (message.likes) {
-            likeDiv.textContent = message.likes
-            likeDiv.classList.remove('chat-rating-empty')
-        } else {
-            likeDiv.textContent = ''
-            likeDiv.classList.add('chat-raiting-empty')
-        }
-        
-        if (message.dislikes) {
-            dislikeDiv.textContent = message.dislikes
-            dislikeDiv.classList.remove('chat-rating-empty')
-        } else {
-            dislikeDiv.textContent = ''
-            dislikeDiv.classList.add('chat-raiting-empty')
-        }
+		const nameDiv = messageElement.querySelector('div[data-flag="name"]');
+		const dateDiv = messageElement.querySelector('div[data-flag="date"]');
+		const contentDiv = messageElement.querySelector(
+			'div[data-flag="content"]'
+		);
+		const likeDiv = messageElement.querySelector('div[data-flag="like"]');
+		const dislikeDiv = messageElement.querySelector(
+			'div[data-flag="dislike"]'
+		);
+		const messageIdDiv = messageElement.querySelector("div[data-id]");
 
-        likeDiv.addEventListener('click', (e) => {
-            socket.emit('message:like', message.id)
-        })
+		nameDiv.textContent = message.name;
+		dateDiv.textContent = format(message.date);
+		contentDiv.textContent = message.content;
 
-        dislikeDiv.addEventListener('click', (e) => {
-            socket.emit('message:dislike', message.id)
-        })
+		if (message.likes) {
+			likeDiv.textContent = message.likes;
+			likeDiv.classList.remove("chat-rating-empty");
+		} else {
+			likeDiv.textContent = "";
+			likeDiv.classList.add("chat-rating-empty");
+		}
 
-        messageIdDiv.dataset.id = message.id
-        messagesDiv.append(messageElement)
-        messagesDiv.scrollTop += `${messagesDiv.clientHeight}`
+		if (message.dislikes) {
+			dislikeDiv.textContent = message.dislikes;
+			dislikeDiv.classList.remove("chat-rating-empty");
+		} else {
+			dislikeDiv.textContent = "";
+			dislikeDiv.classList.add("chat-rating-empty");
+		}
 
-    }
+		likeDiv.addEventListener("click", (e) => {
+			socket.emit("message:like", message.id);
+		});
+
+		dislikeDiv.addEventListener("click", (e) => {
+			socket.emit("message:dislike", message.id);
+		});
+
+		messageIdDiv.dataset.id = message.id;
+		messagesDiv.append(messageElement);
+		messagesDiv.scrollTop += messagesDiv.clientHeight;
+	}
 }

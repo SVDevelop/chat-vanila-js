@@ -1,7 +1,7 @@
 let chats = [] 
 let messages = []
 
-export const socket = io('//localhost:3000')
+export const socket = io('//localhost:3009')
 
 export const getChats = () => chats
 export const getMessages = () => messages

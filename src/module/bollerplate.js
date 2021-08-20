@@ -1,11 +1,10 @@
-const Enter = 'Enter'
+const ENTER_KEY = "Enter";
 
-const {format} = new Intl.DateTimeFormat('ru-RU', {
-    hour12: false,
-    hour: "numeric",
-    minute: 'numeric',
-    seconds: 'numeric'
-})
+const { format } = new Intl.DateTimeFormat("ru-RU", {
+	hour12: false,
+	hour: "numeric",
+	minute: "numeric",
+	seconds: "numeric",
+});
 
-
-export {Enter, format}
+export { ENTER_KEY, format };
